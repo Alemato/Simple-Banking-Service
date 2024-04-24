@@ -1,6 +1,7 @@
 package it.univaq.sose.simplebankingsoapservice.repository;
 
 import it.univaq.sose.simplebankingsoapservice.domain.Account;
+import it.univaq.sose.simplebankingsoapservice.webservice.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,10 +47,15 @@ public class AccountRepository {
         }
     }
 
-    public Account findById(long id) {
+    public Account findById(long id) throws NotFoundException {
         lock.readLock().lock();
         try {
-            return accounts.get(id);
+//            return accounts.get(id);
+            Account account = accounts.get(id);
+            if (account == null) {
+                throw new NotFoundException("Account with ID " + id + " not found.");
+            }
+            return account;
         } finally {
             lock.readLock().unlock();
         }

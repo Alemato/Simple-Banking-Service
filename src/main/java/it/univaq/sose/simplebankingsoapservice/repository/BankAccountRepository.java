@@ -1,6 +1,9 @@
 package it.univaq.sose.simplebankingsoapservice.repository;
 
 import it.univaq.sose.simplebankingsoapservice.domain.BankAccount;
+import it.univaq.sose.simplebankingsoapservice.dto.MoneyTransfer;
+import it.univaq.sose.simplebankingsoapservice.webservice.InsufficientFundsException;
+import it.univaq.sose.simplebankingsoapservice.webservice.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,10 +47,15 @@ public class BankAccountRepository {
         }
     }
 
-    public BankAccount findById(long id) {
+    public BankAccount findById(long id) throws NotFoundException {
         lock.readLock().lock();
         try {
-            return bankAccounts.get(id);
+//            return bankAccounts.get(id);
+            BankAccount bankAccount = bankAccounts.get(id);
+            if (bankAccount == null) {
+                throw new NotFoundException("BankAccount with ID " + id + " not found.");
+            }
+            return bankAccount;
         } finally {
             lock.readLock().unlock();
         }
@@ -72,12 +80,12 @@ public class BankAccountRepository {
         }
     }
 
-    public void addMoney(long id, float amount) {
+    public void addMoney(MoneyTransfer moneyTransfer) {
         lock.writeLock().lock();
         try {
-            BankAccount account = bankAccounts.get(id);
+            BankAccount account = bankAccounts.get(moneyTransfer.getIdBankAccount());
             if (account != null) {
-                float newBalance = account.getMoney() + amount;
+                float newBalance = account.getMoney() + moneyTransfer.getAmount();
                 account.setMoney(newBalance);
             }
         } finally {
@@ -85,13 +93,19 @@ public class BankAccountRepository {
         }
     }
 
-    public boolean removeMoney(long id, float amount) {
+    public boolean removeMoney(MoneyTransfer moneyTransfer) throws NotFoundException, InsufficientFundsException {
         lock.writeLock().lock();
         try {
-            BankAccount account = bankAccounts.get(id);
-            if (account != null && account.getMoney() >= amount) {
-                float newBalance = account.getMoney() - amount;
-                account.setMoney(newBalance);
+            BankAccount bankAccount = bankAccounts.get(moneyTransfer.getIdBankAccount());
+            if (bankAccount == null) {
+                throw new NotFoundException("Account with ID " + moneyTransfer.getIdBankAccount() + " not found.");
+            }
+            if (bankAccount.getMoney() < moneyTransfer.getAmount()) {
+                throw new InsufficientFundsException("Insufficient funds for withdrawal.");
+            }
+            if (bankAccount.getMoney() >= moneyTransfer.getAmount()) {
+                float newBalance = bankAccount.getMoney() - moneyTransfer.getAmount();
+                bankAccount.setMoney(newBalance);
                 return true;
             }
             return false;
