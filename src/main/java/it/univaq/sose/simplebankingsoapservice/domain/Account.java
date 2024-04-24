@@ -5,19 +5,28 @@ public class Account {
     private String name;
     private String surname;
     private Long idBankAccount;
+    private Role role;
+    private String username;
+    private String password;
 
-    public Account(long idAccount, String name, String surname) {
+    public Account(long idAccount, String name, String surname, Role role, String username, String password) {
         this.idAccount = idAccount;
         this.name = name;
         this.surname = surname;
         this.idBankAccount = null;
+        this.role = role;
+        this.username = username;
+        this.password = password;
     }
 
-    public Account(long idAccount, String name, String surname, long idBankAccount) {
+    public Account(long idAccount, String name, String surname, long idBankAccount, Role role, String username, String password) {
         this.idAccount = idAccount;
         this.name = name;
         this.surname = surname;
         this.idBankAccount = idBankAccount;
+        this.role = role;
+        this.username = username;
+        this.password = password;
     }
 
     public long getIdAccount() {
@@ -56,6 +65,30 @@ public class Account {
         this.idBankAccount = idBankAccount;
     }
 
+    public Role getRoles() {
+        return role;
+    }
+
+    public void setRoles(Role role) {
+        this.role = role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Account idAccount(long idAccount) {
         this.idAccount = idAccount;
         return this;
@@ -73,6 +106,21 @@ public class Account {
 
     public Account bankAccount(BankAccount bankAccount) {
         this.idBankAccount = bankAccount.getIdBankAccount();
+        return this;
+    }
+
+    public Account role(Role role) {
+        this.role = role;
+        return this;
+    }
+
+    public Account username(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public Account password(String password) {
+        this.password = password;
         return this;
     }
 
@@ -101,6 +149,9 @@ public class Account {
                 "idProfile=" + idAccount +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
+                ", role=" + role + '\'' +
+                ", username=" + username + '\'' +
+                ", password=" + password + '\'' +
                 ", idBankAccount=" + idBankAccount +
                 '}';
     }
