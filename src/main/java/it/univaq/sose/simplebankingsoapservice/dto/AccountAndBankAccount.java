@@ -12,15 +12,17 @@ public class AccountAndBankAccount {
     //    @XmlElement(required = true)
     private String surname;
     //    @XmlElement(required = true)
+    private String username;
     private BankAccount bankAccount;
 
     public AccountAndBankAccount() {
     }
 
-    public AccountAndBankAccount(long idAccount, String name, String surname, BankAccount bankAccount) {
+    public AccountAndBankAccount(long idAccount, String name, String surname, String username, BankAccount bankAccount) {
         this.idAccount = idAccount;
         this.name = name;
         this.surname = surname;
+        this.username = username;
         this.bankAccount = bankAccount;
     }
 
@@ -56,6 +58,15 @@ public class AccountAndBankAccount {
         this.bankAccount = bankAccount;
     }
 
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -76,6 +87,7 @@ public class AccountAndBankAccount {
                 "idProfile=" + idAccount +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
+                ", username=" + username + '\'' +
                 ", bankAccount=" + bankAccount +
                 '}';
     }

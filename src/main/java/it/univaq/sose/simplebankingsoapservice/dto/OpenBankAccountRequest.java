@@ -15,14 +15,18 @@ public class OpenBankAccountRequest {
     private String surname;
     //    @XmlElement(required = true)
     private float money;
+    private String username;
+    private String password;
 
     public OpenBankAccountRequest() {
     }
 
-    public OpenBankAccountRequest(String name, String surname, float money) {
+    public OpenBankAccountRequest(String name, String surname, float money, String username, String password) {
         this.name = name;
         this.surname = surname;
         this.money = money;
+        this.username = username;
+        this.password = password;
     }
 
     public String getName() {
@@ -49,6 +53,22 @@ public class OpenBankAccountRequest {
         this.money = money;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -63,6 +83,7 @@ public class OpenBankAccountRequest {
         int result = Objects.hashCode(getName());
         result = 31 * result + Objects.hashCode(getSurname());
         result = 31 * result + Float.hashCode(getMoney());
+        result = 31 * result + Objects.hashCode(getUsername());
         return result;
     }
 
@@ -72,6 +93,8 @@ public class OpenBankAccountRequest {
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", money=" + money +
+                ", username=" + username +
+                ", password=" + password +
                 '}';
     }
 }
