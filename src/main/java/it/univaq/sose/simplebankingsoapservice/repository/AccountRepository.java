@@ -1,7 +1,10 @@
 package it.univaq.sose.simplebankingsoapservice.repository;
 
 import it.univaq.sose.simplebankingsoapservice.domain.Account;
+import it.univaq.sose.simplebankingsoapservice.domain.Role;
 import it.univaq.sose.simplebankingsoapservice.webservice.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,9 +13,12 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class AccountRepository {
+    private static final Logger LOG =
+            LoggerFactory.getLogger(AccountRepository.class);
     private static volatile AccountRepository instance;
 
     private final Map<Long, Account> accounts;
+    private long lastIndex;
     private final ReentrantReadWriteLock lock;
 
     private AccountRepository() {
@@ -20,7 +26,9 @@ public class AccountRepository {
             throw new IllegalStateException("Already initialized.");
         }
         this.accounts = new HashMap<>();
+        this.lastIndex = -1;
         this.lock = new ReentrantReadWriteLock();
+        initializeAccounts();
     }
 
     public static AccountRepository getInstance() {
@@ -37,6 +45,28 @@ public class AccountRepository {
         return result;
     }
 
+    private long getNextIndex() {
+        lastIndex += 1;
+        return lastIndex;
+    }
+
+    private void initializeAccounts() {
+        save(new Account(0, "Antonio", "Rossi", "admin", "123456", Role.ADMIN));
+        save(new Account(1, "Michela", "Bianchi", "banker", "123456", Role.BANKER));
+    }
+
+    public Account findByUsername(String u) throws NotFoundException {
+        lock.readLock().lock();
+        try {
+            return accounts.values().stream()
+                    .filter(a -> a.getUsername().equals(u))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException("Username not found: " + u));
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
 
     public List<Account> findAll() {
         lock.readLock().lock();
@@ -50,7 +80,6 @@ public class AccountRepository {
     public Account findById(long id) throws NotFoundException {
         lock.readLock().lock();
         try {
-//            return accounts.get(id);
             Account account = accounts.get(id);
             if (account == null) {
                 throw new NotFoundException("Account with ID " + id + " not found.");
@@ -64,7 +93,7 @@ public class AccountRepository {
     public long lastIdSave() {
         lock.readLock().lock();
         try {
-            return accounts.size() - 1;
+            return lastIndex;
         } finally {
             lock.readLock().unlock();
         }
@@ -73,7 +102,9 @@ public class AccountRepository {
     public long save(Account account) {
         lock.writeLock().lock();
         try {
-            accounts.put(account.getIdAccount(), account);
+            long id = getNextIndex();
+            account.setIdAccount(id);
+            accounts.put(id, account);
             return account.getIdAccount();
         } finally {
             lock.writeLock().unlock();

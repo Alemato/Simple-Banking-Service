@@ -4,12 +4,12 @@ public class Account {
     private long idAccount;
     private String name;
     private String surname;
-    private Long idBankAccount;
-    private Role role;
     private String username;
     private String password;
+    private Role role;
+    private Long idBankAccount;
 
-    public Account(long idAccount, String name, String surname, Role role, String username, String password) {
+    public Account(long idAccount, String name, String surname, String username, String password, Role role) {
         this.idAccount = idAccount;
         this.name = name;
         this.surname = surname;
@@ -19,7 +19,7 @@ public class Account {
         this.password = password;
     }
 
-    public Account(long idAccount, String name, String surname, long idBankAccount, Role role, String username, String password) {
+    public Account(long idAccount, String name, String surname, String username, String password, Role role, long idBankAccount) {
         this.idAccount = idAccount;
         this.name = name;
         this.surname = surname;
@@ -65,11 +65,11 @@ public class Account {
         this.idBankAccount = idBankAccount;
     }
 
-    public Role getRoles() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRoles(Role role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

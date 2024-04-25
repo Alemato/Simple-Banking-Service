@@ -32,13 +32,10 @@ public class BankWebServiceImpl implements BankWebService {
 
     @Override
     public AccountAndBankAccount saveAccountAndBankAccount(OpenBankAccountRequest request) {
-        // TODO: simulare meglio il db
-        long idAccount = accountRepository.lastIdSave() + 1;
-        long idBankAccount = bankAccountRepository.lastIdSave() + 1;
         String bankAccountNumber = bankAccountRepository.generateNewBankAccountNumber();
-        Account account = new Account(idAccount, request.getName(), request.getSurname(), Role.CUSTOMER, request.getUsername(), request.getPassword());
-        idAccount = accountRepository.save(account);
-        BankAccount bankAccount = new BankAccount(idBankAccount, bankAccountNumber, request.getMoney(), idAccount);
+        Account account = new Account(0, request.getName(), request.getSurname(), request.getUsername(), request.getPassword(), Role.CUSTOMER);
+        long idAccount = accountRepository.save(account);
+        BankAccount bankAccount = new BankAccount(0, bankAccountNumber, request.getMoney(), idAccount);
         bankAccountRepository.save(bankAccount);
         account.setIdBankAccount(bankAccount);
         accountRepository.save(account);
