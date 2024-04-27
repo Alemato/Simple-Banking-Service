@@ -18,15 +18,15 @@ import java.util.Optional;
 public class BankWebServiceImpl implements BankWebService {
     private AccountRepository accountRepository = AccountRepository.getInstance();
     private BankAccountRepository bankAccountRepository = BankAccountRepository.getInstance();
-    private static final Logger logger = LoggerFactory.getLogger(BankWebServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BankWebServiceImpl.class);
 
     @Override
     public AccountAndBankAccount getAccountAndBankAccount(long accountId) throws NotFoundException {
         Account account = accountRepository.findById(accountId);
         BankAccount bankAccount = bankAccountRepository.findById(account.getIdBankAccount());
-        logger.info("Risposta getAccountAndBankAccount");
+        LOG.info("Risposta getAccountAndBankAccount");
         AccountAndBankAccount accountAndBankAccount = new AccountAndBankAccount(account.getIdAccount(), account.getName(), account.getSurname(), account.getUsername(), bankAccount);
-        logger.info("{}", accountAndBankAccount);
+        LOG.info("{}", accountAndBankAccount);
         return accountAndBankAccount;
     }
 
@@ -38,10 +38,10 @@ public class BankWebServiceImpl implements BankWebService {
         BankAccount bankAccount = new BankAccount(0, bankAccountNumber, request.getMoney(), idAccount);
         bankAccountRepository.save(bankAccount);
         account.setIdBankAccount(bankAccount);
-        accountRepository.save(account);
-        logger.info("Risposta saveAccountAndBankAccount");
-        AccountAndBankAccount andBankAccount = new AccountAndBankAccount(account.getIdAccount(), account.getName(), account.getSurname(), account.getUsername(), bankAccount);
-        logger.info("{}", andBankAccount);
+        idAccount = accountRepository.updateIdBankAccount(account);
+        LOG.info("Risposta saveAccountAndBankAccount");
+        AccountAndBankAccount andBankAccount = new AccountAndBankAccount(idAccount, account.getName(), account.getSurname(), account.getUsername(), bankAccount);
+        LOG.info("{}", andBankAccount);
         return andBankAccount;
     }
 
@@ -55,10 +55,13 @@ public class BankWebServiceImpl implements BankWebService {
         /*accounts.forEach(account -> accountsAndBankAccounts.add(
                 new AccountAndBankAccount(account.getIdAccount(), account.getName(), account.getSurname(), bankAccounts.stream().filter(
                         bankAccount -> bankAccount.getIdBankAccount() == account.getIdBankAccount()).findFirst().orElse(null))));*/
-
+        LOG.info("Risposta accounts");
+        LOG.info("{}", accounts);
+        LOG.info("Risposta bankAccounts");
+        LOG.info("{}", bankAccounts);
         accounts.forEach(account -> {
             Optional<BankAccount> matchingBankAccount = bankAccounts.stream()
-                    .filter(bankAccount -> bankAccount.getIdBankAccount() == account.getIdBankAccount())
+                    .filter(bankAccount -> account.getIdBankAccount() != null && bankAccount.getIdBankAccount() == account.getIdBankAccount())
                     .findFirst();
 
             matchingBankAccount.ifPresent(bankAccount -> accountsAndBankAccounts.add(new AccountAndBankAccount(
@@ -69,30 +72,41 @@ public class BankWebServiceImpl implements BankWebService {
                     bankAccount
             )));
         });
-        logger.info("Risposta getAllAccountsAndBankAccounts");
-        logger.info("{}", accountsAndBankAccounts);
+        LOG.info("Risposta getAllAccountsAndBankAccounts");
+        LOG.info("{}", accountsAndBankAccounts);
         return accountsAndBankAccounts;
     }
 
     @Override
     public AccountAndBankAccount depositMoneyInBankAccount(MoneyTransfer moneyTransfer) throws NotFoundException {
-        bankAccountRepository.addMoney(moneyTransfer);
+        bankAccountRepository.addMoney(moneyTransfer.getIdBankAccount(), moneyTransfer.getAmount());
         BankAccount bankAccount = bankAccountRepository.findById(moneyTransfer.getIdBankAccount());
         Account account = accountRepository.findById(bankAccount.getAccount());
         AccountAndBankAccount accountAndBankAccount = new AccountAndBankAccount(account.getIdAccount(), account.getName(), account.getSurname(), account.getUsername(), bankAccount);
-        logger.info("Risposta depositMoneyInBankAccount");
-        logger.info("{}", accountAndBankAccount);
+        LOG.info("Risposta depositMoneyInBankAccount");
+        LOG.info("{}", accountAndBankAccount);
         return accountAndBankAccount;
     }
 
     @Override
     public AccountAndBankAccount withdrawMoneyInBankAccount(MoneyTransfer moneyTransfer) throws NotFoundException, InsufficientFundsException {
-        bankAccountRepository.removeMoney(moneyTransfer);
+        bankAccountRepository.removeMoney(moneyTransfer.getIdBankAccount(), moneyTransfer.getAmount());
         BankAccount bankAccount = bankAccountRepository.findById(moneyTransfer.getIdBankAccount());
         Account account = accountRepository.findById(bankAccount.getAccount());
         AccountAndBankAccount accountAndBankAccount = new AccountAndBankAccount(account.getIdAccount(), account.getName(), account.getSurname(), account.getUsername(), bankAccount);
-        logger.info("Risposta withdrawMoneyInBankAccount");
-        logger.info("{}", accountAndBankAccount);
+        LOG.info("Risposta withdrawMoneyInBankAccount");
+        LOG.info("{}", accountAndBankAccount);
         return accountAndBankAccount;
+    }
+
+    @Override
+    public boolean deleteAccount(long accountId) throws NotFoundException {
+        Account account = accountRepository.findById(accountId);
+        accountRepository.delete(account);
+        if (account.getRole().equals(Role.CUSTOMER)) {
+            BankAccount bankAccount = bankAccountRepository.findById(account.getIdBankAccount());
+            bankAccountRepository.delete(bankAccount);
+        }
+        return true;
     }
 }

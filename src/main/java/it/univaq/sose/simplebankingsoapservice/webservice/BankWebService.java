@@ -25,6 +25,9 @@ public interface BankWebService {
     @WebMethod
     public AccountAndBankAccount withdrawMoneyInBankAccount(MoneyTransfer moneyTransfer) throws NotFoundException, InsufficientFundsException;
 
+    @WebMethod
+    boolean deleteAccount(long accountId) throws NotFoundException;
+
     //TODO delete account-bankAccount (add stato conto) -> cancellazione (add pretty last index method)
 
     //TODO Creazione account di servizio senza bank account
