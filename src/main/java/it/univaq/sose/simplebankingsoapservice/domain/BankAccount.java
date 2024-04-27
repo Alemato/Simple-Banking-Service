@@ -98,10 +98,11 @@ public class BankAccount {
     @Override
     public String toString() {
         return "BankAccount{" +
-                "idBankAccount=" + idBankAccount +
+                "idBankAccount='" + idBankAccount + '\'' +
                 ", bankAccountNumber='" + bankAccountNumber + '\'' +
-                ", money=" + money +
-                ", account=" + idAccount +
+                ", money='" + money + '\'' +
+                ", account='" + idAccount + '\'' +
                 '}';
     }
+
 }

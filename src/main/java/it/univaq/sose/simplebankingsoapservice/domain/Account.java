@@ -149,10 +149,10 @@ public class Account {
                 "idProfile=" + idAccount +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", role=" + role + '\'' +
-                ", username=" + username + '\'' +
-                ", password=" + password + '\'' +
-                ", idBankAccount=" + idBankAccount +
+                ", role='" + role + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", idBankAccount='" + idBankAccount + '\'' +
                 '}';
     }
 }
