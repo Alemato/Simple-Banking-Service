@@ -111,10 +111,20 @@ public class AccountRepository {
         }
     }
 
-    public void delete(long id) {
+    public long updateIdBankAccount(Account account) {
         lock.writeLock().lock();
         try {
-            accounts.remove(id);
+            accounts.get(account.getIdAccount()).setIdBankAccount(account.getIdBankAccount());
+            return account.getIdAccount();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public void delete(Account account) {
+        lock.writeLock().lock();
+        try {
+            accounts.remove(account.getIdAccount());
         } finally {
             lock.writeLock().unlock();
         }

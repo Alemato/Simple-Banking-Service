@@ -1,7 +1,6 @@
 package it.univaq.sose.simplebankingsoapservice.repository;
 
 import it.univaq.sose.simplebankingsoapservice.domain.BankAccount;
-import it.univaq.sose.simplebankingsoapservice.dto.MoneyTransfer;
 import it.univaq.sose.simplebankingsoapservice.webservice.InsufficientFundsException;
 import it.univaq.sose.simplebankingsoapservice.webservice.NotFoundException;
 
@@ -14,6 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class BankAccountRepository {
     private static volatile BankAccountRepository instance;
     private final Map<Long, BankAccount> bankAccounts;
+    private long lastIndex;
     private final ReentrantReadWriteLock lock;
 
     private BankAccountRepository() {
@@ -21,6 +21,7 @@ public class BankAccountRepository {
             throw new IllegalStateException("Already initialized.");
         }
         this.bankAccounts = new HashMap<>();
+        this.lastIndex = -1;
         this.lock = new ReentrantReadWriteLock();
     }
 
@@ -36,6 +37,11 @@ public class BankAccountRepository {
             }
         }
         return result;
+    }
+
+    private long getNextIndex() {
+        lastIndex += 1;
+        return lastIndex;
     }
 
     public List<BankAccount> findAll() {
@@ -64,28 +70,30 @@ public class BankAccountRepository {
     public long save(BankAccount bankAccount) {
         lock.writeLock().lock();
         try {
-            bankAccounts.put(bankAccount.getIdBankAccount(), bankAccount);
+            long id = getNextIndex();
+            bankAccount.setIdBankAccount(id);
+            bankAccounts.put(id, bankAccount);
             return bankAccount.getIdBankAccount();
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    public void delete(long id) {
+    public void delete(BankAccount bankAccount) {
         lock.writeLock().lock();
         try {
-            bankAccounts.remove(id);
+            bankAccounts.remove(bankAccount.getIdBankAccount());
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    public void addMoney(MoneyTransfer moneyTransfer) {
+    public void addMoney(long idBankAccount, float amount) {
         lock.writeLock().lock();
         try {
-            BankAccount account = bankAccounts.get(moneyTransfer.getIdBankAccount());
+            BankAccount account = bankAccounts.get(idBankAccount);
             if (account != null) {
-                float newBalance = account.getMoney() + moneyTransfer.getAmount();
+                float newBalance = account.getMoney() + amount;
                 account.setMoney(newBalance);
             }
         } finally {
@@ -93,18 +101,18 @@ public class BankAccountRepository {
         }
     }
 
-    public boolean removeMoney(MoneyTransfer moneyTransfer) throws NotFoundException, InsufficientFundsException {
+    public boolean removeMoney(long idBankAccount, float amount) throws NotFoundException, InsufficientFundsException {
         lock.writeLock().lock();
         try {
-            BankAccount bankAccount = bankAccounts.get(moneyTransfer.getIdBankAccount());
+            BankAccount bankAccount = bankAccounts.get(idBankAccount);
             if (bankAccount == null) {
-                throw new NotFoundException("Account with ID " + moneyTransfer.getIdBankAccount() + " not found.");
+                throw new NotFoundException("Account with ID " + idBankAccount + " not found.");
             }
-            if (bankAccount.getMoney() < moneyTransfer.getAmount()) {
+            if (bankAccount.getMoney() < amount) {
                 throw new InsufficientFundsException("Insufficient funds for withdrawal.");
             }
-            if (bankAccount.getMoney() >= moneyTransfer.getAmount()) {
-                float newBalance = bankAccount.getMoney() - moneyTransfer.getAmount();
+            if (bankAccount.getMoney() >= amount) {
+                float newBalance = bankAccount.getMoney() - amount;
                 bankAccount.setMoney(newBalance);
                 return true;
             }
@@ -127,22 +135,15 @@ public class BankAccountRepository {
     public String generateNewBankAccountNumber() {
         lock.readLock().lock();
         try {
-            if (!bankAccounts.isEmpty()) {
-                String iban = bankAccounts.get((long) bankAccounts.size() - 1).getBankAccountNumber();
-                int length = iban.length();
-                String numericPart = iban.substring(length - 12, length);
-                long number;
+            String base = "IT60X0542811101";
+            String indexAsString = Long.toString(lastIndex + 2);
+            int remainingLength = 12 - indexAsString.length();
+            StringBuilder zeros = new StringBuilder();
+            for (int i = 0; i < remainingLength; i++) {
+                zeros.append("0");
+            }
+            return base + zeros + indexAsString;
 
-                try {
-                    number = Long.parseLong(numericPart);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("L'IBAN fornito non è valido.");
-                }
-
-                number++; // incrementa il numero
-                String newNumericPart = String.format("%012d", number); // mantiene gli zeri iniziali se necessario
-                return iban.substring(0, length - 12) + newNumericPart;
-            } else return "IT60X0542811101000000000001";
         } finally {
             lock.readLock().unlock();
         }
