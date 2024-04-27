@@ -1,9 +1,15 @@
 package it.univaq.sose.simplebankingsoapservice.dto;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MoneyTransfer {
+    @XmlElement(required = true)
     private long idBankAccount;
+    @XmlElement(required = true)
     private float amount;
 
     public MoneyTransfer() {
@@ -47,7 +53,7 @@ public class MoneyTransfer {
     @Override
     public String toString() {
         return "AccountAndBankAccount{" +
-                "idBankAccount=" + idBankAccount +
+                "idBankAccount='" + idBankAccount + '\'' +
                 ", amount='" + amount + '\'' +
                 '}';
     }

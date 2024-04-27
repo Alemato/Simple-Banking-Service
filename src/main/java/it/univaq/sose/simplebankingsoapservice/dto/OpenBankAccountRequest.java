@@ -1,21 +1,30 @@
 package it.univaq.sose.simplebankingsoapservice.dto;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Objects;
 
-//@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
+// https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/XmlAccessorType.html#value--
+// https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/XmlAccessType.html
+
 //@XmlType(name = "OpenBankAccountRequest", propOrder = {
 //        "name",
 //        "surname",
 //        "money"
 //})
 public class OpenBankAccountRequest {
-    //    @XmlElement(required = true)
+    // https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/XmlElement.html
+    @XmlElement(required = true)
     private String name;
-    //    @XmlElement(required = true)
+    @XmlElement(required = true)
     private String surname;
-    //    @XmlElement(required = true)
+    @XmlElement(required = true)
     private float money;
+    @XmlElement(required = true)
     private String username;
+    @XmlElement(required = true)
     private String password;
 
     public OpenBankAccountRequest() {
@@ -92,9 +101,9 @@ public class OpenBankAccountRequest {
         return "OpenBankAccountRequest{" +
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", money=" + money +
-                ", username=" + username +
-                ", password=" + password +
+                ", money='" + money + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

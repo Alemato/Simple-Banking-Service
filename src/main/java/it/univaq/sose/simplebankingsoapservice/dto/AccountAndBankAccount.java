@@ -6,6 +6,7 @@ import it.univaq.sose.simplebankingsoapservice.domain.BankAccount;
 //@XmlType(name = "AccountAndBankAccount")
 public class AccountAndBankAccount {
     //    @XmlElement(required = true)
+    // https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/XmlElement.html
     private long idAccount;
     //    @XmlElement(required = true)
     private String name;
@@ -87,8 +88,8 @@ public class AccountAndBankAccount {
                 "idProfile=" + idAccount +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", username=" + username + '\'' +
-                ", bankAccount=" + bankAccount +
+                ", username='" + username + '\'' +
+                ", bankAccount='" + bankAccount + '\'' +
                 '}';
     }
 }
