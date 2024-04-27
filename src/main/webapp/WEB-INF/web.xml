@@ -5,6 +5,13 @@
          version="4.0">
     <display-name>SimpleBankingSOAPService</display-name>
 
+    <!-- JAAS config -->
+    <context-param>
+        <param-name>java.security.auth.login.config</param-name>
+        <!-- Make sure the path is correct and points to the location of your jaas.config inside the WAR -->
+        <param-value>/WEB-INF/classes/jaas.config</param-value>
+    </context-param>
+
     <servlet>
         <servlet-name>SimpleCXFNonSpringServlet</servlet-name>
         <servlet-class>it.univaq.sose.simplebankingsoapservice.SimpleBankingSoapServiceApplication</servlet-class>
@@ -14,6 +21,10 @@
         <servlet-name>SimpleCXFNonSpringServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+
+    <listener>
+        <listener-class>it.univaq.sose.simplebankingsoapservice.config.BankAppConfigListener</listener-class>
+    </listener>
 
 
     <welcome-file-list>

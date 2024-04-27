@@ -1,0 +1,21 @@
+package it.univaq.sose.simplebankingsoapservice.security;
+
+import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
+import org.apache.wss4j.dom.WSConstants;
+import org.apache.wss4j.dom.handler.WSHandlerConstants;
+
+import java.util.HashMap;
+
+public class BankWSS4JInInterceptor extends WSS4JInInterceptor {
+
+    public BankWSS4JInInterceptor() {
+        super(getProps());
+    }
+
+    private static HashMap<String, Object> getProps() {
+        HashMap<String, Object> props = new HashMap<>();
+        props.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+        props.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+        return props;
+    }
+}

@@ -4,32 +4,40 @@ import it.univaq.sose.simplebankingsoapservice.dto.AccountAndBankAccount;
 import it.univaq.sose.simplebankingsoapservice.dto.MoneyTransfer;
 import it.univaq.sose.simplebankingsoapservice.dto.OpenBankAccountRequest;
 
+import javax.annotation.security.RolesAllowed;
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
 @WebService
 public interface BankWebService {
     @WebMethod
-    public AccountAndBankAccount getAccountAndBankAccount(long accountId) throws NotFoundException;
+    @RolesAllowed({"ADMIN", "BANKER", "CUSTOMER"})
+    public AccountAndBankAccount getAccountAndBankAccount(@WebParam(name = "accountIdRequest") final long accountId) throws NotFoundException;
 
     @WebMethod
-    public AccountAndBankAccount saveAccountAndBankAccount(OpenBankAccountRequest request);
+    @RolesAllowed({"ADMIN", "BANKER"})
+    public AccountAndBankAccount saveAccountAndBankAccount(@WebParam(name = "OpenBankAccountRequest") @XmlElement(required = true) final OpenBankAccountRequest request);
 
     @WebMethod
-    public List<AccountAndBankAccount> getAllAccountsAndBankAccounts(); // TODO Filtro solo per customer (Da verificare)
+    @RolesAllowed({"ADMIN", "BANKER"})
+    public List<AccountAndBankAccount> getAllAccountsAndBankAccounts();
 
     @WebMethod
-    public AccountAndBankAccount depositMoneyInBankAccount(MoneyTransfer moneyTransfer) throws NotFoundException;
+    @RolesAllowed({"ADMIN", "BANKER", "CUSTOMER"})
+    public AccountAndBankAccount depositMoneyInBankAccount(@WebParam(name = "MoneyTransferRequest") @XmlElement(required = true) final MoneyTransfer moneyTransfer) throws NotFoundException;
 
     @WebMethod
-    public AccountAndBankAccount withdrawMoneyInBankAccount(MoneyTransfer moneyTransfer) throws NotFoundException, InsufficientFundsException;
+    @RolesAllowed({"ADMIN", "BANKER", "CUSTOMER"})
+    public AccountAndBankAccount withdrawMoneyInBankAccount(@WebParam(name = "MoneyTransferRequest") @XmlElement(required = true) final MoneyTransfer moneyTransfer) throws NotFoundException, InsufficientFundsException;
 
     @WebMethod
-    boolean deleteAccount(long accountId) throws NotFoundException;
-
-    //TODO delete account-bankAccount (add stato conto) -> cancellazione (add pretty last index method)
+    @RolesAllowed({"ADMIN"})
+    boolean deleteAccount(@WebParam(name = "accountIdRequest") final long accountId) throws NotFoundException;
 
     //TODO Creazione account di servizio senza bank account
+
 
 }
