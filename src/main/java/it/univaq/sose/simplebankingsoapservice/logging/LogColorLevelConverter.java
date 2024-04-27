@@ -1,4 +1,4 @@
-package it.univaq.sose.simplebankingsoapservice.util;
+package it.univaq.sose.simplebankingsoapservice.logging;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.pattern.ClassicConverter;
