@@ -1,8 +1,6 @@
 package it.univaq.sose.simplebankingsoapservice.webservice;
 
-import it.univaq.sose.simplebankingsoapservice.dto.AccountAndBankAccount;
-import it.univaq.sose.simplebankingsoapservice.dto.MoneyTransfer;
-import it.univaq.sose.simplebankingsoapservice.dto.OpenBankAccountRequest;
+import it.univaq.sose.simplebankingsoapservice.dto.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.jws.WebMethod;
@@ -18,8 +16,16 @@ public interface BankWebService {
     public AccountAndBankAccount getAccountAndBankAccount(@WebParam(name = "accountIdRequest") final long accountId) throws NotFoundException;
 
     @WebMethod
+    @RolesAllowed({"ADMIN"})
+    public AccountResponse saveServiceAccount(@WebParam(name = "AccountRequest") @XmlElement(required = true) final AccountRequest request);
+
+    @WebMethod
     @RolesAllowed({"ADMIN", "BANKER"})
     public AccountAndBankAccount saveAccountAndBankAccount(@WebParam(name = "OpenBankAccountRequest") @XmlElement(required = true) final OpenBankAccountRequest request);
+
+    @WebMethod
+    @RolesAllowed({"ADMIN"})
+    List<AccountResponse> getAllServiceAccounts();
 
     @WebMethod
     @RolesAllowed({"ADMIN", "BANKER"})
@@ -36,8 +42,4 @@ public interface BankWebService {
     @WebMethod
     @RolesAllowed({"ADMIN"})
     boolean deleteAccount(@WebParam(name = "accountIdRequest") final long accountId) throws NotFoundException;
-
-    //TODO Creazione account di servizio senza bank account
-
-
 }

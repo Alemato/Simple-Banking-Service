@@ -3,9 +3,7 @@ package it.univaq.sose.simplebankingsoapservice.webservice;
 import it.univaq.sose.simplebankingsoapservice.domain.Account;
 import it.univaq.sose.simplebankingsoapservice.domain.BankAccount;
 import it.univaq.sose.simplebankingsoapservice.domain.Role;
-import it.univaq.sose.simplebankingsoapservice.dto.AccountAndBankAccount;
-import it.univaq.sose.simplebankingsoapservice.dto.MoneyTransfer;
-import it.univaq.sose.simplebankingsoapservice.dto.OpenBankAccountRequest;
+import it.univaq.sose.simplebankingsoapservice.dto.*;
 import it.univaq.sose.simplebankingsoapservice.repository.AccountRepository;
 import it.univaq.sose.simplebankingsoapservice.repository.BankAccountRepository;
 import it.univaq.sose.simplebankingsoapservice.security.AccountDetails;
@@ -19,6 +17,7 @@ import javax.xml.ws.WebServiceContext;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BankWebServiceImpl implements BankWebService {
     private AccountRepository accountRepository = AccountRepository.getInstance();
@@ -58,19 +57,31 @@ public class BankWebServiceImpl implements BankWebService {
     }
 
     @Override
+    public AccountResponse saveServiceAccount(AccountRequest request) {
+        String bankAccountNumber = bankAccountRepository.generateNewBankAccountNumber();
+        Account account = new Account(0, request.getName(), request.getSurname(), request.getUsername(), request.getPassword(), request.getRole());
+        long idAccount = accountRepository.save(account);
+        LOG.info("Risposta saveServiceAccount");
+        AccountResponse accountResponse = new AccountResponse(account.getName(), account.getSurname(), account.getUsername(), account.getRole());
+        LOG.info("{}", accountResponse);
+        return accountResponse;
+    }
+
+    @Override
+    public List<AccountResponse> getAllServiceAccounts() {
+        return accountRepository.findAll().stream()
+                .filter(account -> account.getRole() == Role.ADMIN || account.getRole() == Role.BANKER)
+                .map(account -> new AccountResponse(account.getName(), account.getSurname(), account.getUsername(), account.getRole()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<AccountAndBankAccount> getAllAccountsAndBankAccounts() {
         List<AccountAndBankAccount> accountsAndBankAccounts = new LinkedList<>();
 
         List<Account> accounts = accountRepository.findAll();
         List<BankAccount> bankAccounts = bankAccountRepository.findAll();
 
-        /*accounts.forEach(account -> accountsAndBankAccounts.add(
-                new AccountAndBankAccount(account.getIdAccount(), account.getName(), account.getSurname(), bankAccounts.stream().filter(
-                        bankAccount -> bankAccount.getIdBankAccount() == account.getIdBankAccount()).findFirst().orElse(null))));*/
-        LOG.info("Risposta accounts");
-        LOG.info("{}", accounts);
-        LOG.info("Risposta bankAccounts");
-        LOG.info("{}", bankAccounts);
         accounts.forEach(account -> {
             Optional<BankAccount> matchingBankAccount = bankAccounts.stream()
                     .filter(bankAccount -> account.getIdBankAccount() != null && bankAccount.getIdBankAccount() == account.getIdBankAccount())
