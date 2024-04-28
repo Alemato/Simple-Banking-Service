@@ -3,6 +3,7 @@ package it.univaq.sose.simplebankingsoapservice;
 import it.univaq.sose.simplebankingsoapservice.security.BankJAASLoginInterceptor;
 import it.univaq.sose.simplebankingsoapservice.security.BankSecureAnnotationsInterceptor;
 import it.univaq.sose.simplebankingsoapservice.security.BankWSS4JInInterceptor;
+import it.univaq.sose.simplebankingsoapservice.security.BankWSS4JOutInterceptor;
 import it.univaq.sose.simplebankingsoapservice.webservice.BankWebServiceImpl;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
@@ -26,12 +27,16 @@ public class SimpleBankingSoapServiceApplication extends CXFNonSpringServlet {
 
         Bus bus = getBus();
         BusFactory.setDefaultBus(bus);
+        // INPUT
         // WSS4JInInterceptor
         bus.getInInterceptors().add(new BankWSS4JInInterceptor());
         // JAASLoginInterceptor
         bus.getInInterceptors().add(new BankJAASLoginInterceptor());
         // SecureAnnotationsInterceptor
         bus.getInInterceptors().add(new BankSecureAnnotationsInterceptor(serviceInstance));
+
+        // OUTPUT
+        bus.getOutInterceptors().add(new BankWSS4JOutInterceptor());
 
         Endpoint e = Endpoint.publish("/bank", serviceInstance);
         HashMap<String, Object> endpointProperties = new HashMap<>();

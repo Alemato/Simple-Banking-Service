@@ -20,8 +20,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BankWebServiceImpl implements BankWebService {
-    private AccountRepository accountRepository = AccountRepository.getInstance();
-    private BankAccountRepository bankAccountRepository = BankAccountRepository.getInstance();
+    private final AccountRepository accountRepository = AccountRepository.getInstance();
+    private final BankAccountRepository bankAccountRepository = BankAccountRepository.getInstance();
     private static final Logger LOG = LoggerFactory.getLogger(BankWebServiceImpl.class);
 
     @Resource
