@@ -1,7 +1,5 @@
 package it.univaq.sose.simplebankingsoapservice.dto;
 
-import it.univaq.sose.simplebankingsoapservice.domain.Role;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -26,19 +24,16 @@ public class AccountRequest {
     private String username;
     @XmlElement(required = true)
     private String password;
-    @XmlElement(required = true)
-    private Role role;
 
 
     public AccountRequest() {
     }
 
-    public AccountRequest(String name, String surname, String username, String password, Role role) {
+    public AccountRequest(String name, String surname, String username, String password) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.password = password;
-        this.role = role;
     }
 
     public String getName() {
@@ -73,14 +68,6 @@ public class AccountRequest {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -105,7 +92,6 @@ public class AccountRequest {
                 ", surname='" + surname + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
                 '}';
     }
 }

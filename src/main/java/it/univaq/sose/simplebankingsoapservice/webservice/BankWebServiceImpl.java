@@ -57,12 +57,21 @@ public class BankWebServiceImpl implements BankWebService {
     }
 
     @Override
-    public AccountResponse saveServiceAccount(AccountRequest request) {
-        String bankAccountNumber = bankAccountRepository.generateNewBankAccountNumber();
-        Account account = new Account(0, request.getName(), request.getSurname(), request.getUsername(), request.getPassword(), request.getRole());
+    public AccountResponse saveAdminAccount(AccountRequest request) {
+        Account account = new Account(0, request.getName(), request.getSurname(), request.getUsername(), request.getPassword(), Role.ADMIN);
         long idAccount = accountRepository.save(account);
-        LOG.info("Risposta saveServiceAccount");
-        AccountResponse accountResponse = new AccountResponse(account.getName(), account.getSurname(), account.getUsername(), account.getRole());
+        LOG.info("Risposta saveAdminAccount");
+        AccountResponse accountResponse = new AccountResponse(idAccount, account.getName(), account.getSurname(), account.getUsername(), account.getRole());
+        LOG.info("{}", accountResponse);
+        return accountResponse;
+    }
+
+    @Override
+    public AccountResponse saveBankerAccount(AccountRequest request) {
+        Account account = new Account(0, request.getName(), request.getSurname(), request.getUsername(), request.getPassword(), Role.BANKER);
+        long idAccount = accountRepository.save(account);
+        LOG.info("Risposta saveBankerAccount");
+        AccountResponse accountResponse = new AccountResponse(idAccount, account.getName(), account.getSurname(), account.getUsername(), account.getRole());
         LOG.info("{}", accountResponse);
         return accountResponse;
     }
@@ -71,7 +80,7 @@ public class BankWebServiceImpl implements BankWebService {
     public List<AccountResponse> getAllServiceAccounts() {
         return accountRepository.findAll().stream()
                 .filter(account -> account.getRole() == Role.ADMIN || account.getRole() == Role.BANKER)
-                .map(account -> new AccountResponse(account.getName(), account.getSurname(), account.getUsername(), account.getRole()))
+                .map(account -> new AccountResponse(account.getIdAccount(), account.getName(), account.getSurname(), account.getUsername(), account.getRole()))
                 .collect(Collectors.toList());
     }
 

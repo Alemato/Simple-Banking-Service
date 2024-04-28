@@ -16,12 +16,16 @@ public interface BankWebService {
     public AccountAndBankAccount getAccountAndBankAccount(@WebParam(name = "accountIdRequest") final long accountId) throws NotFoundException;
 
     @WebMethod
-    @RolesAllowed({"ADMIN"})
-    public AccountResponse saveServiceAccount(@WebParam(name = "AccountRequest") @XmlElement(required = true) final AccountRequest request);
-
-    @WebMethod
     @RolesAllowed({"ADMIN", "BANKER"})
     public AccountAndBankAccount saveAccountAndBankAccount(@WebParam(name = "OpenBankAccountRequest") @XmlElement(required = true) final OpenBankAccountRequest request);
+
+    @WebMethod
+    @RolesAllowed({"ADMIN"})
+    AccountResponse saveAdminAccount(@WebParam(name = "OpenBankAccountRequest") @XmlElement(required = true) final AccountRequest request);
+
+    @WebMethod
+    @RolesAllowed({"ADMIN"})
+    AccountResponse saveBankerAccount(@WebParam(name = "OpenBankAccountRequest") @XmlElement(required = true) final AccountRequest request);
 
     @WebMethod
     @RolesAllowed({"ADMIN"})

@@ -10,6 +10,8 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AccountResponse {
     @XmlElement(required = true)
+    private long idAccount;
+    @XmlElement(required = true)
     private String name;
     @XmlElement(required = true)
     private String surname;
@@ -22,7 +24,8 @@ public class AccountResponse {
     public AccountResponse() {
     }
 
-    public AccountResponse(String name, String surname, String username, Role role) {
+    public AccountResponse(long idAccount, String name, String surname, String username, Role role) {
+        this.idAccount = idAccount;
         this.name = name;
         this.surname = surname;
         this.username = username;
@@ -61,6 +64,14 @@ public class AccountResponse {
         this.role = role;
     }
 
+    public long getIdAccount() {
+        return idAccount;
+    }
+
+    public void setIdAccount(long idAccount) {
+        this.idAccount = idAccount;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -81,10 +92,12 @@ public class AccountResponse {
     @Override
     public String toString() {
         return "OpenBankAccountRequest{" +
-                "name='" + name + '\'' +
+                "idAccount='" + idAccount + '\'' +
+                ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", username='" + username + '\'' +
                 ", role='" + role + '\'' +
                 '}';
     }
+
 }
