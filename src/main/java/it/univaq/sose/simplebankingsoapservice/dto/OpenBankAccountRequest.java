@@ -3,27 +3,31 @@ package it.univaq.sose.simplebankingsoapservice.dto;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-// https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/XmlAccessorType.html#value--
-// https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/XmlAccessType.html
-
-//@XmlType(name = "OpenBankAccountRequest", propOrder = {
-//        "name",
-//        "surname",
-//        "money"
-//})
+@XmlType(name = "OpenBankAccountRequest", propOrder = {
+        "name",
+        "surname",
+        "money",
+        "username",
+        "password"
+})
 public class OpenBankAccountRequest {
-    // https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/annotation/XmlElement.html
+
     @XmlElement(required = true)
     private String name;
+
     @XmlElement(required = true)
     private String surname;
+
     @XmlElement(required = true)
     private float money;
+
     @XmlElement(required = true)
     private String username;
+
     @XmlElement(required = true)
     private String password;
 

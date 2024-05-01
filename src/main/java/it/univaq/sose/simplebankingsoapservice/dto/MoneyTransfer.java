@@ -3,12 +3,19 @@ package it.univaq.sose.simplebankingsoapservice.dto;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "MoneyTransfer", propOrder = {
+        "idBankAccount",
+        "amount"
+})
 public class MoneyTransfer {
+
     @XmlElement(required = true)
     private long idBankAccount;
+
     @XmlElement(required = true)
     private float amount;
 

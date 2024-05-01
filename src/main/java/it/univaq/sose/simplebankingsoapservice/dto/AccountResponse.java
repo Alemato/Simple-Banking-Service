@@ -5,18 +5,30 @@ import it.univaq.sose.simplebankingsoapservice.domain.Role;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "AccountResponse", propOrder = {
+        "idAccount",
+        "name",
+        "surname",
+        "username",
+        "role"
+})
 public class AccountResponse {
     @XmlElement(required = true)
     private long idAccount;
+
     @XmlElement(required = true)
     private String name;
+
     @XmlElement(required = true)
     private String surname;
+
     @XmlElement(required = true)
     private String username;
+
     @XmlElement(required = true)
     private Role role;
 
