@@ -14,24 +14,11 @@ public class ServerPasswordCallback implements CallbackHandler {
 
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-//        for (Callback callback : callbacks) {
-//            WSPasswordCallback pc = (WSPasswordCallback) callback;
-//            AccountRepository repo = AccountRepository.getInstance();
-//            try {
-//                String password = repo.findByUsername(pc.getIdentifier()).getPassword();
-//                if (password != null) {
-//                    pc.setPassword(password);
-//                }
-//            } catch (NotFoundException e) {
-//                throw new Fault(e);
-//            }
-//        }
         for (Callback callback : callbacks) {
             if (callback instanceof WSPasswordCallback) {
                 WSPasswordCallback pc = (WSPasswordCallback) callback;
-                // Qui puoi impostare la logica per selezionare la password corretta in base all'identificatore
                 if ("webservice.simplebankingsoapservice.sose.univaq.it".equals(pc.getIdentifier())) {
-                    // Imposta la password della chiave privata
+                    // Set Private Key Password
                     pc.setPassword("123456");
                 }
             }

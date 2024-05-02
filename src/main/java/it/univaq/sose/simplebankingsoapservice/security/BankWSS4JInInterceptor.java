@@ -14,7 +14,8 @@ public class BankWSS4JInInterceptor extends WSS4JInInterceptor {
 
     private static HashMap<String, Object> getProps() {
         HashMap<String, Object> props = new HashMap<>();
-        props.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN + " " + WSHandlerConstants.SIGNATURE);
+        //props.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN + " " + WSHandlerConstants.SIGNATURE + " " + WSHandlerConstants.TIMESTAMP + " " + WSHandlerConstants.ENCRYPTION);
+        props.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN + " " + WSHandlerConstants.SIGNATURE + " " + WSHandlerConstants.TIMESTAMP);
         props.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
         props.put(WSHandlerConstants.SIG_VER_PROP_FILE, "client-sign.properties");
         //props.put(WSHandlerConstants.DEC_PROP_FILE, "client-encr.properties");
